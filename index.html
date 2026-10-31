@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanilla Tweaks — Clean, Reversible Windows Optimization</title>
+    <meta name="description" content="A clean, reversible Windows optimization suite built for performance, privacy and control. Windows 10 / 11, 64-bit, Free.">
+    
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: {
+                            100: '#FFF5D6',
+                            200: '#FFE799',
+                            300: '#FFD875',
+                            400: '#F5C563',
+                            500: '#E5B242',
+                            600: '#C79328',
+                            700: '#9E7019',
+                            800: '#75500F',
+                            900: '#4D3306',
+                        },
+                        dark: {
+                            950: '#050507',
+                            900: '#0A0A0E',
+                            850: '#101017',
+                            800: '#161622',
+                            700: '#222232',
+                            600: '#2F2F45',
+                        }
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 25px -5px rgba(245, 197, 99, 0.35)',
+                        'gold-glow-lg': '0 0 40px -5px rgba(245, 197, 99, 0.5)',
+                        'gold-glow-sm': '0 0 15px -3px rgba(245, 197, 99, 0.25)',
+                        'card-glow': '0 0 30px rgba(0, 0, 0, 0.8)',
+                    },
+                    backgroundImage: {
+                        'radial-gold': 'radial-gradient(circle at center, rgba(245, 197, 99, 0.15) 0%, transparent 70%)',
+                        'radial-hero': 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 197, 99, 0.2), transparent 100%)',
+                        'gold-gradient': 'linear-gradient(135deg, #FFD875 0%, #F5C563 50%, #C79328 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Customizations & Glassmorphism */
+        body {
+            background-color: #050507;
+            color: #E2E8F0;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        .glass-card {
+            background: rgba(16, 16, 23, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(245, 197, 99, 0.12);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(245, 197, 99, 0.35);
+            box-shadow: 0 10px 30px -10px rgba(245, 197, 99, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .gold-border-glow {
+            position: relative;
+        }
+
+        .gold-border-glow::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(245, 197, 99, 0.6), rgba(245, 197, 99, 0.05), rgba(245, 197, 99, 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050507;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222232;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #F5C563;
+        }
+
+        /* Toggle Switch Animation */
+        .toggle-checkbox:checked {
+            right: 0;
+            background-color: #F5C563;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: rgba(245, 197, 99, 0.3);
+        }
+
+        /* Animated pulse for badges */
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+        .pulse-gold {
+            animation: subtle-pulse 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="relative bg-grid-pattern selection:bg-gold-400 selection:text-black">
+
+    <!-- Ambient Lighting Backgrounds -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-radial-hero pointer-events-none -z-10 opacity-70"></div>
+    <div class="fixed bottom-0 right-0 w-[600px] h-[600px] bg-radial-gold pointer-events-none -z-10 opacity-40"></div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 w-full border-b border-gold-400/10 bg-dark-950/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded-lg p-1">
+                <!-- Logo Badge: Glowing gold rounded square with black V -->
+                <div class="relative w-10 h-10 rounded-xl bg-gold-gradient p-[1.5px] shadow-gold-glow group-hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-full bg-dark-950 rounded-[10px] flex items-center justify-center font-extrabold text-xl text-gold-400 tracking-tighter">
+                        V
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
+                        Vanilla Tweaks
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-gold-400"></span>
+                    </span>
+                    <span class="text-[10px] font-medium tracking-wider text-gold-400/80 uppercase">Windows Suite</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors">Features</a>
+                <a href="#safety" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors">Safety</a>
+                <a href="#how-it-works" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors">How It Works</a>
+                <a href="#download" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors">Download</a>
+                <a href="#discord" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors">Discord</a>
+                <a href="#faq" class="text-sm font-medium text-gray-300 hover:text-gold-400 transition-colors">FAQ</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="hidden sm:flex items-center gap-4">
+                <a href="https://discord.gg/DmcyZefjue" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white bg-dark-800 border border-gray-800 hover:border-gold-400/30 transition-all">
+                    <i data-lucide="disc" class="w-4 h-4 text-gold-400"></i>
+                    <span>Discord</span>
+                </a>
+                <a href="#download" 
+                   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-dark-950 bg-gold-gradient hover:opacity-95 shadow-gold-glow hover:shadow-gold-glow-lg transition-all active:scale-95">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Download App</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" aria-label="Toggle navigation menu" class="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-dark-800 focus:outline-none">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-gold-400/10 bg-dark-900/95 backdrop-blur-2xl px-4 pt-2 pb-6 space-y-3">
+            <a href="#features" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-dark-800 hover:text-gold-400">Features</a>
+            <a href="#safety" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-dark-800 hover:text-gold-400">Safety & Control</a>
+            <a href="#how-it-works" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-dark-800 hover:text-gold-400">How It Works</a>
+            <a href="#download" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-dark-800 hover:text-gold-400">Download</a>
+            <a href="#discord" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-dark-800 hover:text-gold-400">Community</a>
+            <a href="#faq" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-dark-800 hover:text-gold-400">FAQ</a>
+            
+            <div class="pt-4 flex flex-col gap-2">
+                <a href="#download" class="w-full text-center py-3 rounded-xl font-bold text-dark-950 bg-gold-gradient shadow-gold-glow">
+                    Download Vanilla Tweaks
+                </a>
+                <a href="https://discord.gg/DmcyZefjue" target="_blank" rel="noopener noreferrer" class="w-full text-center py-3 rounded-xl font-medium text-gray-200 bg-dark-800 border border-gold-400/20">
+                    Join Community Discord
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <!-- OS Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold-400/30 bg-gold-400/10 text-gold-300 text-xs sm:text-sm font-medium mb-8 pulse-gold shadow-gold-glow-sm">
+                <i data-lucide="shield-check" class="w-4 h-4 text-gold-400"></i>
+                <span>Windows 10 / 11 · 64-bit · Free</span>
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold text-white tracking-tight leading-none mb-6">
+                Make Windows Feel <br class="hidden sm:inline" />
+                <span class="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-600 bg-clip-text text-transparent drop-shadow-sm">Vanilla Again</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="max-w-3xl mx-auto text-lg sm:text-xl text-gray-300 font-normal leading-relaxed mb-10">
+                A clean, reversible Windows optimization suite built for performance, privacy and control.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                <a href="#download" 
+                   class="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-bold text-dark-950 bg-gold-gradient hover:scale-105 shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center gap-3 group">
+                    <i data-lucide="download" class="w-5 h-5 transition-transform group-hover:-translate-y-0.5"></i>
+                    <span>Download Vanilla Tweaks</span>
+                </a>
+
+                <a href="https://discord.gg/DmcyZefjue" target="_blank" rel="noopener noreferrer"
+                   class="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-semibold text-white bg-dark-850 border border-gold-400/20 hover:border-gold-400/60 hover:bg-dark-800 transition-all duration-300 flex items-center justify-center gap-3">
+                    <i data-lucide="disc" class="w-5 h-5 text-gold-400"></i>
+                    <span>Join our Discord</span>
+                </a>
+            </div>
+
+            <!-- APP MOCKUP PREVIEW DASHBOARD -->
+            <div class="relative max-w-5xl mx-auto">
+                <!-- Glowing ambient backlight -->
+                <div class="absolute -inset-1 bg-gradient-to-r from-gold-400/20 via-gold-500/30 to-gold-400/20 rounded-3xl blur-2xl opacity-75"></div>
+
+                <!-- Window Frame Mockup -->
+                <div class="relative rounded-2xl border border-gold-400/30 bg-dark-900 shadow-card-glow overflow-hidden text-left">
+                    
+                    <!-- Window Title Bar -->
+                    <div class="bg-dark-950 px-4 py-3 border-b border-gray-800/80 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="flex gap-1.5">
+                                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-400 flex items-center gap-2">
+                                <div class="w-4 h-4 rounded bg-gold-gradient flex items-center justify-center text-[10px] font-bold text-black">V</div>
+                                Vanilla Tweaks v2.4 (x64) — System Status: Optimized
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gold-400 bg-gold-400/10 px-2.5 py-1 rounded-full border border-gold-400/20">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                            <span>System Restore Point Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive App Mockup Body -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 min-h-[460px]">
+                        
+                        <!-- App Sidebar Navigation -->
+                        <div class="md:col-span-3 bg-dark-950/70 border-r border-gray-800/80 p-3 flex md:flex-col gap-1 overflow-x-auto md:overflow-x-visible">
+                            <button onclick="switchTab('tweaks')" id="tab-btn-tweaks" class="mockup-tab-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-gold-400/15 text-gold-300 border border-gold-400/30">
+                                <i data-lucide="sliders" class="w-4 h-4"></i>
+                                <span>Optimizations</span>
+                            </button>
+                            <button onclick="switchTab('debloat')" id="tab-btn-debloat" class="mockup-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-400 hover:text-white hover:bg-dark-800/60">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                <span>Debloat</span>
+                            </button>
+                            <button onclick="switchTab('cleanup')" id="tab-btn-cleanup" class="mockup-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-400 hover:text-white hover:bg-dark-800/60">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                <span>Cleanup</span>
+                            </button>
+                            <button onclick="switchTab('benchmark')" id="tab-btn-benchmark" class="mockup-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-400 hover:text-white hover:bg-dark-800/60">
+                                <i data-lucide="gauge" class="w-4 h-4"></i>
+                                <span>Benchmark</span>
+                            </button>
+                            <button onclick="switchTab('sysinfo')" id="tab-btn-sysinfo" class="mockup-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-400 hover:text-white hover:bg-dark-800/60">
+                                <i data-lucide="cpu" class="w-4 h-4"></i>
+                                <span>System Info</span>
+                            </button>
+                            <button onclick="switchTab('wallpaper')" id="tab-btn-wallpaper" class="mockup-tab-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-gray-400 hover:text-white hover:bg-dark-800/60">
+                                <i data-lucide="video" class="w-4 h-4"></i>
+                                <span>Live Wallpaper</span>
+                            </button>
+                        </div>
+
+                        <!-- App Content Panels -->
+                        <div class="md:col-span-9 p-5 bg-dark-900 flex flex-col justify-between">
+                            
+                            <!-- TAB 1: TWEAKS (Default) -->
+                            <div id="tab-content-tweaks" class="tab-panel block space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+                                    <div>
+                                        <h3 class="text-base font-bold text-white">Reversible Performance Tweaks</h3>
+                                        <p class="text-xs text-gray-400">Toggle recommended Windows system optimizations safely.</p>
+                                    </div>
+                                    <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-md font-mono">100% Reversible</span>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <!-- Toggle Item 1 -->
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-dark-850 border border-gray-800 hover:border-gold-400/30 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="p-2 rounded-lg bg-gold-400/10 text-gold-400">
+                                                <i data-lucide="zap" class="w-4 h-4"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-xs font-semibold text-white">Ultimate Performance Power Plan</div>
+                                                <div class="text-[11px] text-gray-400">Unlocks maximum CPU frequency and disables power throttling</div>
+                                            </div>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gold-400"></div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Toggle Item 2 -->
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-dark-850 border border-gray-800 hover:border-gold-400/30 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="p-2 rounded-lg bg-gold-400/10 text-gold-400">
+                                                <i data-lucide="gamepad-2" class="w-4 h-4"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-xs font-semibold text-white">Disable Windows Game Bar & DVR Background Recording</div>
+                                                <div class="text-[11px] text-gray-400">Reduces background GPU/CPU overhead in games</div>
+                                            </div>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gold-400"></div>
+                                        </label>
+                                    </div>
+
+                                    <!-- Toggle Item 3 -->
+                                    <div class="flex items-center justify-between p-3 rounded-xl bg-dark-850 border border-gray-800 hover:border-gold-400/30 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="p-2 rounded-lg bg-gold-400/10 text-gold-400">
+                                                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-xs font-semibold text-white">Disable Telemetry & Diagnostic Data Collection</div>
+                                                <div class="text-[11px] text-gray-400">Prevents background tracking and upload pinging</div>
+                                            </div>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked class="sr-only peer">
+                                            <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gold-400"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 2: DEBLOAT -->
+                            <div id="tab-content-debloat" class="tab-panel hidden space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+                                    <div>
+                                        <h3 class="text-base font-bold text-white">AppX & Pre-installed Debloater</h3>
+                                        <p class="text-xs text-gray-400">Remove bloatware packages safely with restorable backups.</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="p-2.5 rounded-lg bg-dark-850 border border-gray-800 flex items-center justify-between">
+                                        <span class="text-gray-300">3D Viewer & Print3D</span>
+                                        <span class="text-xs text-gold-400 font-semibold">Selected</span>
+                                    </div>
+                                    <div class="p-2.5 rounded-lg bg-dark-850 border border-gray-800 flex items-center justify-between">
+                                        <span class="text-gray-300">Cortana & Bing Search</span>
+                                        <span class="text-xs text-gold-400 font-semibold">Selected</span>
+                                    </div>
+                                    <div class="p-2.5 rounded-lg bg-dark-850 border border-gray-800 flex items-center justify-between">
+                                        <span class="text-gray-300">Windows Feedback Hub</span>
+                                        <span class="text-xs text-gold-400 font-semibold">Selected</span>
+                                    </div>
+                                    <div class="p-2.5 rounded-lg bg-dark-850 border border-gray-800 flex items-center justify-between">
+                                        <span class="text-gray-300">Solitaire Collection</span>
+                                        <span class="text-xs text-gold-400 font-semibold">Selected</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 3: CLEANUP -->
+                            <div id="tab-content-cleanup" class="tab-panel hidden space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+                                    <div>
+                                        <h3 class="text-base font-bold text-white">Deep Storage Cleaner</h3>
+                                        <p class="text-xs text-gray-400">Clean temporary files, thumbnail cache, crash dumps and update residual files.</p>
+                                    </div>
+                                    <span class="text-xs font-mono text-gold-400 font-bold bg-gold-400/10 px-2 py-1 rounded">4.82 GB Found</span>
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between p-2.5 bg-dark-850 rounded-lg border border-gray-800">
+                                        <span class="text-gray-300">Windows Update Temp Cache</span>
+                                        <span class="text-gray-400 font-mono">2.41 GB</span>
+                                    </div>
+                                    <div class="flex justify-between p-2.5 bg-dark-850 rounded-lg border border-gray-800">
+                                        <span class="text-gray-300">Crash Dumps & Error Reports</span>
+                                        <span class="text-gray-400 font-mono">1.15 GB</span>
+                                    </div>
+                                    <div class="flex justify-between p-2.5 bg-dark-850 rounded-lg border border-gray-800">
+                                        <span class="text-gray-300">System Temp & Prefetch</span>
+                                        <span class="text-gray-400 font-mono">1.26 GB</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 4: BENCHMARK -->
+                            <div id="tab-content-benchmark" class="tab-panel hidden space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+                                    <div>
+                                        <h3 class="text-base font-bold text-white">System Hardware Benchmark</h3>
+                                        <p class="text-xs text-gray-400">Test CPU single-core, multi-core, memory latency and disk speeds.</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3 text-center">
+                                    <div class="p-3 bg-dark-850 rounded-xl border border-gray-800">
+                                        <div class="text-[10px] text-gray-400 uppercase font-semibold">Single Core CPU</div>
+                                        <div class="text-lg font-bold text-gold-400 font-mono mt-1">1,942 pts</div>
+                                    </div>
+                                    <div class="p-3 bg-dark-850 rounded-xl border border-gray-800">
+                                        <div class="text-[10px] text-gray-400 uppercase font-semibold">Multi Core CPU</div>
+                                        <div class="text-lg font-bold text-gold-400 font-mono mt-1">14,820 pts</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 5: SYS INFO -->
+                            <div id="tab-content-sysinfo" class="tab-panel hidden space-y-3 text-xs">
+                                <div class="pb-2 border-b border-gray-800">
+                                    <h3 class="text-base font-bold text-white">Hardware & OS Diagnostics</h3>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="p-2.5 bg-dark-850 rounded-lg border border-gray-800">
+                                        <span class="text-gray-500 block text-[10px] uppercase font-bold">Processor</span>
+                                        <span class="text-gray-200 font-medium">Intel Core i7-13700K / AMD Ryzen 7</span>
+                                    </div>
+                                    <div class="p-2.5 bg-dark-850 rounded-lg border border-gray-800">
+                                        <span class="text-gray-500 block text-[10px] uppercase font-bold">Graphics Card</span>
+                                        <span class="text-gray-200 font-medium">NVIDIA GeForce RTX 4080 (16GB)</span>
+                                    </div>
+                                    <div class="p-2.5 bg-dark-850 rounded-lg border border-gray-800">
+                                        <span class="text-gray-500 block text-[10px] uppercase font-bold">Memory RAM</span>
+                                        <span class="text-gray-200 font-medium">32 GB DDR5 @ 6000 MHz</span>
+                                    </div>
+                                    <div class="p-2.5 bg-dark-850 rounded-lg border border-gray-800">
+                                        <span class="text-gray-500 block text-[10px] uppercase font-bold">OS Version</span>
+                                        <span class="text-gray-200 font-medium">Windows 11 Pro 64-bit (23H2)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 6: WALLPAPER -->
+                            <div id="tab-content-wallpaper" class="tab-panel hidden space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+                                    <div>
+                                        <h3 class="text-base font-bold text-white">Desktop Live Wallpaper Engine</h3>
+                                        <p class="text-xs text-gray-400">Set MP4, WMV or AVI video as an animated background.</p>
+                                    </div>
+                                </div>
+                                <div class="p-4 border border-dashed border-gold-400/30 rounded-xl bg-dark-850/50 text-center space-y-2">
+                                    <i data-lucide="video" class="w-8 h-8 text-gold-400 mx-auto"></i>
+                                    <div class="text-xs font-semibold text-white">Select a Local Video File</div>
+                                    <div class="text-[11px] text-gray-400">Supports .mp4, .wmv, .avi · Auto pauses in full-screen games</div>
+                                </div>
+                            </div>
+
+                            <!-- App Bottom Action Controls -->
+                            <div class="pt-4 border-t border-gray-800/80 flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Restore Point Ready</span>
+                                </div>
+                                <button class="px-5 py-2 rounded-xl text-xs font-bold text-dark-950 bg-gold-gradient shadow-gold-glow cursor-default">
+                                    Apply Changes & Optimize
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section id="features" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-gold-400 mb-3">Comprehensive Suite</h2>
+                <p class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                    Engineered for Maximum Speed, <br class="hidden sm:inline"/>Zero Clutter
+                </p>
+                <p class="mt-4 text-gray-400 text-base sm:text-lg">
+                    Nine powerful tools combined into one lightweight, dark-themed Windows companion.
+                </p>
+            </div>
+
+            <!-- Features Grid (9 Items) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                
+                <!-- Feature 1: Reversible Optimizations -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="sliders" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">1. Reversible Optimizations</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Apply targeted performance, gaming, privacy, network, display, and power tweaks. Every single change can be reverted safely with one click.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        <span>100% Reversible</span>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Debloat -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="trash-2" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">2. Debloat</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Remove unwanted built-in Windows applications, pre-installed bloatware packages, and telemetry services effortlessly.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                        <span>Clean Package Manager</span>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Cleanup -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="sparkles" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">3. Cleanup</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Clean temporary files, Recycle Bin, thumbnail cache, Windows update leftovers, prefetch files, and crash dumps to free up gigabytes.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="hard-drive" class="w-4 h-4"></i>
+                        <span>Reclaim Disk Space</span>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Benchmark -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="gauge" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">4. Benchmark</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Test CPU single-core, multi-core, memory speed, and storage drive read/write performance before and after tweaking.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="activity" class="w-4 h-4"></i>
+                        <span>Real-Time Performance Metrics</span>
+                    </div>
+                </div>
+
+                <!-- Feature 5: System Information -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="cpu" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">5. System Information</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            View detailed specs for processor, graphics card, RAM, Windows build, SSD/HDD storage, motherboard BIOS version, and battery metrics.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>Comprehensive Specs Overview</span>
+                    </div>
+                </div>
+
+                <!-- Feature 6: Restore Points -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">6. Restore Points</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Automatically or manually create and manage Windows restore points before making major system changes for total peace of mind.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="lock" class="w-4 h-4"></i>
+                        <span>Automatic Safety Net</span>
+                    </div>
+                </div>
+
+                <!-- Feature 7: App Launcher -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="rocket" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">7. App Launcher</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Add your favorite EXE executable files and Start Menu applications, then launch them directly with priority launch parameters.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                        <span>Fast Application Hub</span>
+                    </div>
+                </div>
+
+                <!-- Feature 8: Desktop Live Wallpaper -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="video" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">8. Desktop Live Wallpaper</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Choose any local MP4, WMV, or AVI video file and render it as an animated desktop wallpaper with smart pause on game focus.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="film" class="w-4 h-4"></i>
+                        <span>Custom Video Engine</span>
+                    </div>
+                </div>
+
+                <!-- Feature 9: Discord Integration -->
+                <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gold-400/10 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="disc" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">9. Discord Integration</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Show Vanilla Tweaks Rich Presence status in Discord and optionally sign in with Discord using safe OAuth authentication.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-800/60 flex items-center gap-2 text-xs font-semibold text-gold-400">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>
+                        <span>Optional Rich Presence</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SAFETY & TRANSPARENCY SECTION -->
+    <section id="safety" class="py-20 bg-dark-900/60 border-y border-gold-400/10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Heading Block -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-gold-400/10 text-gold-400 text-xs font-bold uppercase tracking-wider border border-gold-400/20">
+                        <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+                        <span>Safety & Integrity</span>
+                    </div>
+                    <h2 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+                        Your PC. <br/>
+                        <span class="text-gold-400">Your Control.</span>
+                    </h2>
+                    <p class="text-gray-300 text-base leading-relaxed">
+                        Vanilla Tweaks was designed with absolute transparency and respect for user ownership. We believe software should build trust, not compromise privacy.
+                    </p>
+                    <div class="p-4 rounded-xl bg-dark-800 border border-gray-800 text-xs text-gray-400 space-y-2">
+                        <div class="font-semibold text-white flex items-center gap-2">
+                            <i data-lucide="info" class="w-4 h-4 text-gold-400"></i>
+                            <span>No Telemetry & No Hidden Background Services</span>
+                        </div>
+                        <p>We do not collect telemetry, track usage statistics, or display inflated/fake metrics.</p>
+                    </div>
+                </div>
+
+                <!-- Right Safety Cards Grid -->
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <!-- Safety Card 1 -->
+                    <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/30 transition-all space-y-3">
+                        <div class="p-2.5 w-fit rounded-lg bg-gold-400/10 text-gold-400">
+                            <i data-lucide="undo-2" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white">100% Reversible Tweaks</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Every tweak modifies documented registry keys or group policies. Revert any change at any time without reinstalling Windows.
+                        </p>
+                    </div>
+
+                    <!-- Safety Card 2 -->
+                    <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/30 transition-all space-y-3">
+                        <div class="p-2.5 w-fit rounded-lg bg-gold-400/10 text-gold-400">
+                            <i data-lucide="key-round" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white">Zero Token / Password Collection</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            No passwords or Discord bot tokens are ever requested or stored. Your account credentials stay entirely private on your device.
+                        </p>
+                    </div>
+
+                    <!-- Safety Card 3 -->
+                    <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/30 transition-all space-y-3">
+                        <div class="p-2.5 w-fit rounded-lg bg-gold-400/10 text-gold-400">
+                            <i data-lucide="user-check" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white">Basic Discord OAuth Only</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Signing in with Discord uses standard OAuth and only requests basic profile identity (avatar and username) for your app dashboard.
+                        </p>
+                    </div>
+
+                    <!-- Safety Card 4 -->
+                    <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/30 transition-all space-y-3">
+                        <div class="p-2.5 w-fit rounded-lg bg-gold-400/10 text-gold-400">
+                            <i data-lucide="battery-charging" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white">Transparent Wallpaper Note</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Rendering live video wallpapers requires active video decoding and may consume additional GPU power and battery on laptops.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section id="how-it-works" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-gold-400 mb-3">Quick Setup Guide</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Five Simple Steps to Get Started</p>
+            </div>
+
+            <!-- Steps Container -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                
+                <!-- Step 1 -->
+                <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/40 transition-all relative flex flex-col justify-between">
+                    <div>
+                        <div class="text-3xl font-black text-gold-400/40 mb-4 font-mono">01</div>
+                        <h4 class="text-base font-bold text-white mb-2">Download ZIP</h4>
+                        <p class="text-xs text-gray-400">Download the standalone <code class="text-gold-300">VanillaTweaks-win-x64.zip</code> file.</p>
+                    </div>
+                    <div class="mt-6 text-gold-400"><i data-lucide="file-archive" class="w-5 h-5"></i></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/40 transition-all relative flex flex-col justify-between">
+                    <div>
+                        <div class="text-3xl font-black text-gold-400/40 mb-4 font-mono">02</div>
+                        <h4 class="text-base font-bold text-white mb-2">Extract Folder</h4>
+                        <p class="text-xs text-gray-400">Unzip the contents to any directory on your local drive.</p>
+                    </div>
+                    <div class="mt-6 text-gold-400"><i data-lucide="folder-output" class="w-5 h-5"></i></div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/40 transition-all relative flex flex-col justify-between">
+                    <div>
+                        <div class="text-3xl font-black text-gold-400/40 mb-4 font-mono">03</div>
+                        <h4 class="text-base font-bold text-white mb-2">Launch App</h4>
+                        <p class="text-xs text-gray-400">Open <code class="text-gold-300">VanillaTweaks.exe</code> with administrator privileges.</p>
+                    </div>
+                    <div class="mt-6 text-gold-400"><i data-lucide="play-circle" class="w-5 h-5"></i></div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/40 transition-all relative flex flex-col justify-between">
+                    <div>
+                        <div class="text-3xl font-black text-gold-400/40 mb-4 font-mono">04</div>
+                        <h4 class="text-base font-bold text-white mb-2">Discord Sign-In</h4>
+                        <p class="text-xs text-gray-400">Optionally connect Discord for Rich Presence and customized profile features.</p>
+                    </div>
+                    <div class="mt-6 text-gold-400"><i data-lucide="disc" class="w-5 h-5"></i></div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="p-6 rounded-2xl bg-dark-850 border border-gray-800 hover:border-gold-400/40 transition-all relative flex flex-col justify-between">
+                    <div>
+                        <div class="text-3xl font-black text-gold-400/40 mb-4 font-mono">05</div>
+                        <h4 class="text-base font-bold text-white mb-2">Optimize PC</h4>
+                        <p class="text-xs text-gray-400">Apply tweaks, debloat apps, clean junk files, and customize your experience.</p>
+                    </div>
+                    <div class="mt-6 text-gold-400"><i data-lucide="check-check" class="w-5 h-5"></i></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- DOWNLOAD SECTION -->
+    <section id="download" class="py-20 relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative rounded-3xl p-8 sm:p-12 border border-gold-400/40 bg-gradient-to-b from-dark-850 to-dark-900 shadow-gold-glow-lg text-center overflow-hidden">
+                
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-400/10 text-gold-400 text-xs font-semibold mb-6 border border-gold-400/30">
+                    <i data-lucide="package" class="w-4 h-4"></i>
+                    <span>Official Release · VanillaTweaks-win-x64.zip</span>
+                </div>
+
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                    Ready to Optimize Windows?
+                </h2>
+
+                <p class="max-w-xl mx-auto text-gray-300 text-sm sm:text-base mb-8">
+                    Self-contained Windows x64 build. No separate .NET installation required. Everything is included in one clean package.
+                </p>
+
+                <!-- Primary Download Action Button -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+                    <a href="[DOWNLOAD_LINK]" id="main-download-btn" onclick="handleDownloadClick(event)"
+                       class="w-full sm:w-auto px-10 py-5 rounded-2xl text-lg font-extrabold text-dark-950 bg-gold-gradient hover:scale-105 shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center gap-3">
+                        <i data-lucide="download" class="w-6 h-6"></i>
+                        <span>Download for Windows</span>
+                    </a>
+                </div>
+
+                <!-- Meta specs badge -->
+                <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-gray-400 font-medium">
+                    <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-gold-400"></i> Windows 10 / 11 (64-bit)</span>
+                    <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-gold-400"></i> Portable (No Install Needed)</span>
+                    <span class="flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4 text-gold-400"></i> 100% Free Suite</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- DISCORD SECTION (Two separate cards) -->
+    <section id="discord" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-gold-400 mb-3">Community Hubs</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Join Our Discord Communities</p>
+                <p class="mt-3 text-gray-400 text-sm">Get instant support, talk with developers, or hang out with fellow gamers.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- CARD 1: Vanilla Tweaks Community -->
+                <div class="glass-card rounded-3xl p-8 flex flex-col justify-between border-gold-400/20 hover:border-gold-400/50">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gold-gradient p-[1px] shadow-gold-glow">
+                                <div class="w-full h-full bg-dark-950 rounded-[15px] flex items-center justify-center text-gold-400">
+                                    <i data-lucide="sliders" class="w-7 h-7"></i>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-gold-400 bg-gold-400/10 px-3 py-1 rounded-full border border-gold-400/20">Official Support</span>
+                        </div>
+                        
+                        <h3 class="text-2xl font-extrabold text-white mb-2">Vanilla Tweaks Community</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-8">
+                            Updates, support, optimization tips, feature requests and official announcements.
+                        </p>
+                    </div>
+
+                    <a href="https://discord.gg/DmcyZefjue" target="_blank" rel="noopener noreferrer"
+                       class="w-full py-4 rounded-xl text-center text-sm font-bold text-dark-950 bg-gold-gradient hover:shadow-gold-glow transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="disc" class="w-4 h-4"></i>
+                        <span>Join Vanilla Tweaks Discord</span>
+                    </a>
+                </div>
+
+                <!-- CARD 2: Gaming & Fun Community -->
+                <div class="glass-card rounded-3xl p-8 flex flex-col justify-between border-gold-400/20 hover:border-gold-400/50">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-500 p-[1px]">
+                                <div class="w-full h-full bg-dark-950 rounded-[15px] flex items-center justify-center text-purple-400">
+                                    <i data-lucide="gamepad-2" class="w-7 h-7"></i>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-purple-400 bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">Social & Gaming</span>
+                        </div>
+
+                        <h3 class="text-2xl font-extrabold text-white mb-2">Gaming & Fun Community</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-8">
+                            Laugh, play games together, share setups, and meet new friends in our vibrant gaming lounge.
+                        </p>
+                    </div>
+
+                    <a href="https://discord.gg/3nXFCumMhm" target="_blank" rel="noopener noreferrer"
+                       class="w-full py-4 rounded-xl text-center text-sm font-bold text-white bg-dark-800 border border-purple-500/30 hover:border-purple-400 hover:bg-dark-750 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="gamepad-2" class="w-4 h-4 text-purple-400"></i>
+                        <span>Join Gaming Community</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq" class="py-24 bg-dark-900/40 relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-gold-400 mb-3">Questions & Answers</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Frequently Asked Questions</p>
+            </div>
+
+            <div class="space-y-4">
+                
+                <!-- FAQ 1 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Is Vanilla Tweaks free?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        Yes! Vanilla Tweaks is 100% free to download and use. There are no hidden paywalls, subscriptions, or locked features.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Does it require installation?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        No installation required. Vanilla Tweaks is packaged as a self-contained portable Windows x64 build. Simply extract the ZIP file and run <code class="text-gold-300">VanillaTweaks.exe</code>.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Can I undo tweaks?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        Yes, absolutely. Every tweak applied by Vanilla Tweaks can be safely toggled back off or restored. In addition, the app allows you to create a Windows Restore Point before applying major changes.
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Does it work on Windows 10 and Windows 11?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        Yes. Vanilla Tweaks is fully compatible with 64-bit editions of both Windows 10 and Windows 11.
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Is Discord login required?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        No, Discord login is entirely optional. You can use all core optimization, cleanup, benchmark, and app launching features without signing in.
+                    </div>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Does the app collect telemetry?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        No. Vanilla Tweaks does not collect personal data, telemetry, or system tracking metrics. Your PC setup remains private to you.
+                    </div>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Can I add my own applications?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        Yes! The App Launcher feature lets you browse and add any custom EXE executable or Start Menu shortcut for quick launching directly from Vanilla Tweaks.
+                    </div>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="faq-item rounded-2xl bg-dark-850 border border-gray-800 overflow-hidden transition-all">
+                    <button onclick="toggleFaq(this)" class="w-full p-6 text-left flex items-center justify-between gap-4 focus:outline-none">
+                        <span class="text-base font-bold text-white">Can I use a video as desktop wallpaper?</span>
+                        <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-gold-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-6 text-sm text-gray-300 border-t border-gray-800/60 pt-4 leading-relaxed">
+                        Yes. Vanilla Tweaks includes a Desktop Live Wallpaper module that supports local MP4, WMV, and AVI video files. Please note that active video wallpapers may consume additional GPU and battery power.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-gold-400/10 bg-dark-950 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-gray-800/80">
+                
+                <!-- Footer Brand Column -->
+                <div class="md:col-span-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-gold-gradient p-[1px] shadow-gold-glow flex items-center justify-center text-dark-950 font-bold text-lg">
+                            V
+                        </div>
+                        <span class="text-xl font-bold text-white">Vanilla Tweaks</span>
+                    </div>
+                    <p class="text-xs text-gray-400 max-w-sm leading-relaxed">
+                        Made for Windows users who want control. Clean, reversible, transparent optimizations built for peak PC performance.
+                    </p>
+                    <div class="text-xs text-gold-400/80 font-medium pt-2">
+                        Windows 10 / 11 · 64-bit Architecture
+                    </div>
+                </div>
+
+                <!-- Quick Navigation Links -->
+                <div class="md:col-span-3 space-y-3">
+                    <div class="text-xs font-bold uppercase tracking-widest text-gold-400">Navigation</div>
+                    <ul class="space-y-2 text-xs text-gray-300">
+                        <li><a href="#download" class="hover:text-gold-400 transition-colors">Download App</a></li>
+                        <li><a href="#features" class="hover:text-gold-400 transition-colors">Features Suite</a></li>
+                        <li><a href="#safety" class="hover:text-gold-400 transition-colors">Safety & Reversibility</a></li>
+                        <li><a href="#how-it-works" class="hover:text-gold-400 transition-colors">How It Works</a></li>
+                        <li><a href="#faq" class="hover:text-gold-400 transition-colors">FAQ & Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Community Links (Including both Discord Links) -->
+                <div class="md:col-span-4 space-y-3">
+                    <div class="text-xs font-bold uppercase tracking-widest text-gold-400">Official Communities</div>
+                    <ul class="space-y-2.5 text-xs text-gray-300">
+                        <li>
+                            <a href="https://discord.gg/DmcyZefjue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 hover:text-gold-400 transition-colors">
+                                <i data-lucide="disc" class="w-4 h-4 text-gold-400"></i>
+                                <span>Vanilla Tweaks Discord (Support & Updates)</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://discord.gg/3nXFCumMhm" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 hover:text-purple-400 transition-colors">
+                                <i data-lucide="gamepad-2" class="w-4 h-4 text-purple-400"></i>
+                                <span>Gaming & Fun Community</span>
+                            </a>
+                        </li>
+                        <li class="pt-2">
+                            <button onclick="openPrivacyModal()" class="text-xs text-gray-400 hover:text-gold-400 underline transition-colors">
+                                Privacy Policy & Control Terms
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Footer Bottom Note -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <div>
+                    &copy; Vanilla Tweaks. All rights reserved.
+                </div>
+                <div class="text-gray-400">
+                    “Made for Windows users who want control.”
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PRIVACY MODAL -->
+    <div id="privacy-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="bg-dark-900 border border-gold-400/30 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-gold-glow relative">
+            <button onclick="closePrivacyModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-3 text-gold-400">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                <h3 class="text-lg font-bold text-white">Privacy & Transparency</h3>
+            </div>
+            <div class="text-xs text-gray-300 space-y-3 leading-relaxed max-h-[60vh] overflow-y-auto pr-2">
+                <p><strong>1. Zero Data Harvesting:</strong> Vanilla Tweaks operates entirely locally on your Windows machine. We do not transmit system metrics, diagnostic telemetry, or personal files to external servers.</p>
+                <p><strong>2. Discord OAuth Privacy:</strong> If you choose to log in with Discord, authentication is handled directly via Discord's secure OAuth2 service. Vanilla Tweaks only reads your public basic profile info (username and avatar) for local display.</p>
+                <p><strong>3. Reversible System Tweaks:</strong> All optimizations are transparent modifications to standard Windows registry keys. System restore points are recommended and supported prior to batch updates.</p>
+            </div>
+            <div class="pt-2">
+                <button onclick="closePrivacyModal()" class="w-full py-2.5 rounded-xl text-xs font-bold text-dark-950 bg-gold-gradient">
+                    I Understand
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- SCRIPT INITS AND INTERACTIVITY -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // App Mockup Tab Switcher
+        function switchTab(tabId) {
+            // Hide all tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+                panel.classList.remove('block');
+            });
+
+            // Reset tab button styles
+            document.querySelectorAll('.mockup-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-gold-400/15', 'text-gold-300', 'border', 'border-gold-400/30', 'font-semibold');
+                btn.classList.add('text-gray-400', 'font-medium');
+            });
+
+            // Show selected tab panel
+            const activePanel = document.getElementById(`tab-content-${tabId}`);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+                activePanel.classList.add('block');
+            }
+
+            // Highlight selected tab button
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-gray-400', 'font-medium');
+                activeBtn.classList.add('bg-gold-400/15', 'text-gold-300', 'border', 'border-gold-400/30', 'font-semibold');
+            }
+        }
+
+        // FAQ Accordion Toggle
+        function toggleFaq(button) {
+            const faqItem = button.parentElement;
+            const content = faqItem.querySelector('.faq-content');
+            const icon = button.querySelector('.faq-icon');
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+                faqItem.classList.add('border-gold-400/40');
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+                faqItem.classList.remove('border-gold-400/40');
+            }
+        }
+
+        // Privacy Modal Functions
+        function openPrivacyModal() {
+            const modal = document.getElementById('privacy-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closePrivacyModal() {
+            const modal = document.getElementById('privacy-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Handle Download Click
+        function handleDownloadClick(e) {
+            const link = e.currentTarget.getAttribute('href');
+            if (link === '[DOWNLOAD_LINK]') {
+                e.preventDefault();
+                showToast('Initiating Vanilla Tweaks Download (Placeholder link)...', 'download');
+            }
+        }
+
+        // Toast Notification System
+        function showToast(message, iconName = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl bg-dark-800 border border-gold-400/40 text-xs font-semibold text-white shadow-gold-glow animate-bounce';
+            toast.innerHTML = `
+                <div class="text-gold-400"><i data-lucide="${iconName}" class="w-4 h-4"></i></div>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
