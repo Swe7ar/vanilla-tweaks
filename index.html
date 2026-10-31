@@ -186,7 +186,7 @@
                     <i data-lucide="disc" class="w-4 h-4 text-gold-400"></i>
                     <span>Discord</span>
                 </a>
-                <a href="#download" 
+                <a href="https://github.com/Swe7ar/vanilla-tweaks/releases/tag/vanillatweaks" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-dark-950 bg-gold-gradient hover:opacity-95 shadow-gold-glow hover:shadow-gold-glow-lg transition-all active:scale-95">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     <span>Download App</span>
@@ -209,7 +209,7 @@
             <a href="#faq" class="block px-3 py-2 rounded-lg text-base font-medium text-gray-200 hover:bg-dark-800 hover:text-gold-400">FAQ</a>
             
             <div class="pt-4 flex flex-col gap-2">
-                <a href="#download" class="w-full text-center py-3 rounded-xl font-bold text-dark-950 bg-gold-gradient shadow-gold-glow">
+                <a href="https://github.com/Swe7ar/vanilla-tweaks/releases/tag/vanillatweaks" target="_blank" rel="noopener noreferrer" class="w-full text-center py-3 rounded-xl font-bold text-dark-950 bg-gold-gradient shadow-gold-glow">
                     Download Vanilla Tweaks
                 </a>
                 <a href="https://discord.gg/DmcyZefjue" target="_blank" rel="noopener noreferrer" class="w-full text-center py-3 rounded-xl font-medium text-gray-200 bg-dark-800 border border-gold-400/20">
@@ -242,7 +242,7 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-                <a href="#download" 
+                <a href="https://github.com/Swe7ar/vanilla-tweaks/releases/tag/vanillatweaks" target="_blank" rel="noopener noreferrer"
                    class="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-bold text-dark-950 bg-gold-gradient hover:scale-105 shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center gap-3 group">
                     <i data-lucide="download" class="w-5 h-5 transition-transform group-hover:-translate-y-0.5"></i>
                     <span>Download Vanilla Tweaks</span>
@@ -853,7 +853,7 @@
 
                 <!-- Primary Download Action Button -->
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-                    <a href="[DOWNLOAD_LINK]" id="main-download-btn" onclick="handleDownloadClick(event)"
+                    <a href="https://github.com/Swe7ar/vanilla-tweaks/releases/tag/vanillatweaks" id="main-download-btn" target="_blank" rel="noopener noreferrer"
                        class="w-full sm:w-auto px-10 py-5 rounded-2xl text-lg font-extrabold text-dark-950 bg-gold-gradient hover:scale-105 shadow-gold-glow-lg transition-all duration-300 flex items-center justify-center gap-3">
                         <i data-lucide="download" class="w-6 h-6"></i>
                         <span>Download for Windows</span>
@@ -1065,7 +1065,7 @@
                 <div class="md:col-span-3 space-y-3">
                     <div class="text-xs font-bold uppercase tracking-widest text-gold-400">Navigation</div>
                     <ul class="space-y-2 text-xs text-gray-300">
-                        <li><a href="#download" class="hover:text-gold-400 transition-colors">Download App</a></li>
+                        <li><a href="https://github.com/Swe7ar/vanilla-tweaks/releases/tag/vanillatweaks" target="_blank" rel="noopener noreferrer" class="hover:text-gold-400 transition-colors">Download App</a></li>
                         <li><a href="#features" class="hover:text-gold-400 transition-colors">Features Suite</a></li>
                         <li><a href="#safety" class="hover:text-gold-400 transition-colors">Safety & Reversibility</a></li>
                         <li><a href="#how-it-works" class="hover:text-gold-400 transition-colors">How It Works</a></li>
@@ -1212,15 +1212,6 @@
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-            }
-        }
-
-        // Handle Download Click
-        function handleDownloadClick(e) {
-            const link = e.currentTarget.getAttribute('href');
-            if (link === '[DOWNLOAD_LINK]') {
-                e.preventDefault();
-                showToast('Initiating Vanilla Tweaks Download (Placeholder link)...', 'download');
             }
         }
 
